@@ -41,7 +41,7 @@ buildGoModule {
     "nowatchdog"
   ];
 
-  env.CGO_ENABLED = 1;
+  CGO_ENABLED = 1;
   proxyVendor = true;
 
   nativeBuildInputs = [
