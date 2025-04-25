@@ -6,15 +6,15 @@
 
 buildGoModule rec {
   pname = "any-sync-node";
-  version = "0.6.1";
+  version = "0.7.3";
   src = fetchFromGitHub {
     owner = "anyproto";
     repo = pname;
     rev = "v${version}";
-    sha256 = "sha256-vek3RdFvj/AuoEI4KT65U/Omh641XBWacinFAIfUiPg=";
+    sha256 = "sha256-UT0U83E4F69VgCbHiATr9lWy8QxKH9a8qzTNWmmHL+U=";
   };
 
-  vendorHash = "sha256-SqizuimBHcvUsWBBgSDlH9L5Ej1ND7mSP10PVPoTgSM=";
+  vendorHash = "sha256-bmOXsCIofybZKPCUgSZSom9TI2vmVatjNaX7jrDyddQ=";
 
   env.CGO_ENABLED = "1";
 
