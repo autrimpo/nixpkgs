@@ -1,56 +1,53 @@
 {
   lib,
+  stdenv,
   fetchFromGitHub,
-  rustPlatform,
-  cargo-tauri,
+  electron,
   nodejs,
-  pnpm_8,
-  pkg-config,
-  wrapGAppsHook3,
-  openssl,
-  webkitgtk_4_1,
-  glib-networking,
+  pnpm_9,
+  python3,
   nix-update-script,
 }:
 
-rustPlatform.buildRustPackage (finalAttrs: {
+stdenv.mkDerivation (finalAttrs: {
   pname = "aonsoku";
-  version = "0.9.1";
+  version = "0.10.2";
 
   src = fetchFromGitHub {
     owner = "victoralvesf";
     repo = "aonsoku";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-qlc7P222e6prYG30iVTAZhP772za3H7gVszfWvOr2NM=";
+    hash = "sha256-/6mFMZu15daIrB1yw4xN0KXFl3ZYsLNKxAk3Bkc5jlg=";
   };
 
-  # lockfileVersion: '6.0' need old pnpm
-  pnpmDeps = pnpm_8.fetchDeps {
+  pnpmDeps = pnpm_9.fetchDeps {
     inherit (finalAttrs) pname version src;
-    fetcherVersion = 1;
-    hash = "sha256-h1rcM+H2c0lk7bpGeQT5ue9bQIggrCFHkj4o7KxnH08=";
+    fetcherVersion = 2;
+    hash = "sha256-k9ay1dJZn9aJF/J++t7sC3H++gf7EWtEOUVdZjrbdlY=";
   };
-
-  cargoRoot = "src-tauri";
-  buildAndTestSubdir = finalAttrs.cargoRoot;
-
-  cargoHash = "sha256-8UtfL8iB1XKP31GT9Ok5hIQSobQTm681uiluG+IhK/s=";
-
-  patches = [ ./remove_updater.patch ];
 
   nativeBuildInputs = [
     nodejs
-    pnpm_8.configHook
-    cargo-tauri.hook
-    pkg-config
-    wrapGAppsHook3
+    pnpm_9.configHook
+    python3
   ];
 
-  buildInputs = [
-    openssl
-    webkitgtk_4_1
-    glib-networking
-  ];
+  env.ELECTRON_SKIP_BINARY_DOWNLOAD = "1";
+
+  buildPhase = ''
+    runHook preBuild
+
+    export npm_config_nodedir=${electron.headers}
+
+    pnpm electron:build
+    pnpm electron-builder \
+      --dir \
+      -c.asarUnpack="**/*.node" \
+      -c.electronDist=${electron.dist} \
+      -c.electronVersion=${electron.version}
+
+    runHook postBuild
+  '';
 
   passthru.updateScript = nix-update-script { };
 
