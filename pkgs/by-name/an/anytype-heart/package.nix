@@ -69,6 +69,7 @@ buildGoModule (finalAttrs: {
     mkdir -p $out/lib
     cp -r dist/js/pb/* $out/lib
     cp -r dist/js/pb/* $out/lib
+    cp -r pb/protos/* $out/lib/pb/protos
 
     mkdir -p $out/lib/json/generated
     cp pkg/lib/bundle/system*.json $out/lib/json/generated
