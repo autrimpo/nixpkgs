@@ -4,6 +4,7 @@
   stdenvNoCC,
   fetchFromGitHub,
   buildNpmPackage,
+  coreutils,
   nodejs_22,
   bun,
   pkg-config,
@@ -12,6 +13,7 @@
   electron,
   go,
   lsof,
+  protobuf,
   makeDesktopItem,
   copyDesktopItems,
   writableTmpDirAsHomeHook,
@@ -108,6 +110,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     nodejs_22
     pkg-config
     go
+    protobuf
     copyDesktopItems
   ];
   buildInputs = [ libsecret ];
@@ -137,17 +140,17 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
     cp -r ${anytype-heart}/lib dist/
     cp -r ${anytype-heart}/bin/anytypeHelper dist/
-    mkdir dist/lib/protos
-    cp dist/lib/pb/protos/service/service.proto dist/lib/protos/service.proto
 
     for lang in ${finalAttrs.locales}/locales/*; do
       cp "$lang" "dist/lib/json/lang/$(basename $lang)"
     done
 
-    node ./scripts/generate-service-registry.js --from-dist
+    sed -i "s%/usr/bin/env%${coreutils}/bin/env%" scripts/generate-protos.sh
+
+    bash ./scripts/generate-protos.sh --from-dist
 
     bun run build
-    bun run build:nmh
+    # bun run build:nmh
 
     runHook postBuild
   '';
@@ -178,8 +181,8 @@ stdenvNoCC.mkDerivation (finalAttrs: {
       --add-flags $out/lib/anytype/ \
       --add-flags ${lib.escapeShellArg commandLineArgs}
 
-    wrapProgram $out/lib/anytype/dist/nativeMessagingHost \
-       --prefix PATH : ${lib.makeBinPath [ lsof ]}
+    # wrapProgram $out/lib/anytype/dist/nativeMessagingHost \
+    #    --prefix PATH : ${lib.makeBinPath [ lsof ]}
 
     runHook postInstall
   '';
