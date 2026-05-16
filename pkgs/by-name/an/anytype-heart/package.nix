@@ -26,7 +26,7 @@ buildGoModule (finalAttrs: {
 
   # Use only versions specified in anytype-ts middleware.version file:
   #  https://github.com/anyproto/anytype-ts/blob/v<anytype-ts-version>/middleware.version
-  version = "0.49.0-rc08";
+  version = "0.50.4";
 
   # Update only together with 'anytype' package.
   # nixpkgs-update: no auto update
@@ -34,10 +34,10 @@ buildGoModule (finalAttrs: {
     owner = "anyproto";
     repo = "anytype-heart";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-gTUesFf6cDwsFCEUjpcy9VA67GwuZ9mNTih4HC0Vi7g=";
+    hash = "sha256-nqyA7S6UAX2KI3szQy8ou8gcfDav7+3pgrRaLTaaQF4=";
   };
 
-  vendorHash = "sha256-1D7v/lgmoKOOHNG3vgpzDpWQ66lmmP8IeZ5rvXe4D9M=";
+  vendorHash = "sha256-PnCJa7yvhYSpQ5L+6PVsXO7W21QKHxvxhDKha1MfG3Q=";
 
   subPackages = [ "cmd/grpcserver" ];
   tags = [
